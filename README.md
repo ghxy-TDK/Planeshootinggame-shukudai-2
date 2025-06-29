@@ -11,12 +11,43 @@
 
 ## 📁 项目结构
 ```plaintext
-res/            # 游戏资源目录
-  ├── FEUI.png   # 游戏UI素材
-src/
-  ├── planeshootinggame.cpp  # 游戏主逻辑
-  ├── planeshootinggame.sh   # 构建脚本
-vcproj/         # VS项目配置
-  ├── *.vcxproj              # 项目文件
-  ├── *.filters              # 解决方案筛选器
-  └── *.user                 # 用户配置
+planeshootinggame/
+├── include/                  # 所有头文件
+│   ├── Game/
+│   │   ├── Bullet.h
+│   │   ├── Enemy.h
+│   │   ├── Explosion.h
+│   │   ├── GameObject.h
+│   │   ├── Player.h
+│   │   └── PowerUp.h
+│   ├── Managers/
+│   │   ├── GameManager.h
+│   │   └── SoundManager.h
+│   └── Utils/
+│       ├── common.h
+│       └── Constants.h      # 建议添加的常量定义文件
+├── src/                     # 所有源代码
+│   ├── Game/
+│   │   ├── Bullet.cpp
+│   │   ├── Enemy.cpp
+│   │   ├── Explosion.cpp
+│   │   ├── GameObject.cpp
+│   │   ├── Player.cpp
+│   │   └── PowerUp.cpp
+│   ├── Managers/
+│   │   ├── GameManager.cpp
+│   │   └── SoundManager.cpp
+│   └── Utils/
+│       └── common.cpp
+├── res/                     # 游戏资源
+│   ├── Textures/
+│   │   └── FEUI.png         # 图片资源
+│   ├── Sounds/              # 音效资源（可选）
+│   └── Fonts/               # 字体资源（可选）
+├── vcproj/                  # VS项目配置
+│   ├── planeshootinggame.vcxproj
+│   ├── planeshootinggame.filters
+│   └── planeshootinggame.user
+└── scripts/                 # 构建/运行脚本
+    ├── build.sh             # 构建脚本（原planeshootinggame.sh）
+    └── run.sh               # 运行脚本（可选）
