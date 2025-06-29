@@ -39,11 +39,31 @@ void Player::heal() {
 
 void Player::drawShield() {
     if (shield_active_) {
-        setfillcolor(BLUE);
-        solidcircle(x, y, img_width_ + 15);
-        setlinecolor(RGB(0, 200, 255));
-        setlinestyle(PS_SOLID, 3);
-        circle(x, y, img_width_ + 15);
+
+        // 绘制多个同心圆，颜色逐渐变浅，营造半透明效果
+        setlinecolor(RGB(0, 150, 255));
+        setlinestyle(PS_SOLID, 1);
+
+        // 外圈 - 最浅
+        circle(x, y, img_width_ - 40);
+        circle(x, y, img_width_ - 43);
+
+        // 中圈 - 中等
+        setlinecolor(RGB(0, 180, 255));
+        circle(x, y, img_width_ - 46);
+        circle(x, y, img_width_ - 49);
+
+        // 内圈 - 较亮
+        setlinecolor(RGB(100, 220, 255));
+        setlinestyle(PS_SOLID, 2);
+        circle(x, y, img_width_ - 52);
+
+        // 核心光环效果
+        setlinecolor(RGB(150, 240, 255));
+        setlinestyle(PS_SOLID, 1);
+        circle(x, y, img_width_ -55);
+
+        // 恢复默认设置
         setlinestyle(PS_SOLID, 1);
     }
 }

@@ -238,8 +238,10 @@ void GameManager::drawMenu() {
     settextstyle(18, 0, _T("Arial"));
     outtextxy(WINDOW_WIDTH / 2 - 120, 350, _T("控制方式:"));
     outtextxy(WINDOW_WIDTH / 2 - 120, 380, _T("WASD/方向键: 移动飞船"));
-    outtextxy(WINDOW_WIDTH / 2 - 120, 410, _T("空格/J键: 发射激光"));
-    outtextxy(WINDOW_WIDTH / 2 - 120, 440, _T("P键: 暂停游戏"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 410, _T("空格/J键: 发射子弹"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 440, _T("E键: 发射激光"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 470, _T("Q键: 展开护盾"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 500, _T("P键: 暂停游戏"));
 
     settextcolor(sound_manager_.isSoundEnabled() ?
         RGB(150, 255, 150) :
@@ -250,11 +252,11 @@ void GameManager::drawMenu() {
     _stprintf_s(soundText, _T("%s 声音: %s (M键切换)"),
         sound_manager_.isSoundEnabled() ? _T("🔊") : _T("🔇"),
         sound_manager_.isSoundEnabled() ? _T("开") : _T("关"));
-    outtextxy(WINDOW_WIDTH / 2 - textwidth(soundText) / 2, 470, soundText);
+    outtextxy(WINDOW_WIDTH / 2 - textwidth(soundText) / 2 - 70, 530, soundText);
 
     settextcolor(RGB(150, 255, 150));
     settextstyle(18, 0, _T("微软雅黑"));
-    outtextxy(WINDOW_WIDTH / 2 - 180, 510, _T("收集能量道具增强你的飞船!"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 560, _T("收集能量道具增强你的飞船!"));
 }
 
 void GameManager::drawGame() {
