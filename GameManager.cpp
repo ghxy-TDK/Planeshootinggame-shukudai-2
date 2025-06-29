@@ -272,17 +272,17 @@ void GameManager::drawGame() {
 
 void GameManager::drawUI() {
     settextcolor(RGB(255, 255, 255));
-    settextstyle(18, 0, _T("Arial"));
+    settextstyle(18, 0, _T("微软雅黑"));
 
     TCHAR text[100];
-    _stprintf_s(text, _T("Score: %d  Level: %d  Lives: %d"), score_, level_, player_.lives_);
+    _stprintf_s(text, _T("分数: %d  等级: %d  剩余生命: %d"), score_, level_, player_.lives_);
     outtextxy(WINDOW_WIDTH - 300, 50, text);
 
-    _stprintf_s(text, _T("Damage: %d  Speed: %d"), player_.damage_, player_.speed_);
+    _stprintf_s(text, _T("伤害: %d  移速: %d"), player_.damage_, player_.speed_);
     outtextxy(WINDOW_WIDTH - 300, 75, text);
 
     if (player_.attack_speed_boost_timer_ > 0) {
-        _stprintf_s(text, _T("Attack Speed Boost: %.1f s"), player_.attack_speed_boost_timer_ / 60.0f);
+        _stprintf_s(text, _T("攻速提升效果: %.1f 秒"), player_.attack_speed_boost_timer_ / 60.0f);
         outtextxy(10, 60, text);
     }
 
@@ -290,38 +290,38 @@ void GameManager::drawUI() {
 
     if (skill_status.laser_active) {
         settextcolor(RGB(255, 100, 100));
-        _stprintf_s(text, _T("Laser Active: %.1f s"), skill_status.laser_duration_remaining / 60.0f);
+        _stprintf_s(text, _T("激光子弹效果: %.1f 秒"), skill_status.laser_duration_remaining / 60.0f);
         outtextxy(10, 80, text);
     }
     else if (skill_status.laser_ready) {
         settextcolor(RGB(100, 255, 100));
-        _stprintf_s(text, _T("Laser Ready (E)"));
+        _stprintf_s(text, _T("激光子弹就绪 (E)"));
         outtextxy(10, 80, text);
     }
     else {
         settextcolor(RGB(255, 255, 100));
-        _stprintf_s(text, _T("Laser Cooldown: %.1f s"), skill_status.laser_cooldown_remaining / 60.0f);
+        _stprintf_s(text, _T("激光子弹冷却: %.1f 秒"), skill_status.laser_cooldown_remaining / 60.0f);
         outtextxy(10, 80, text);
     }
 
     if (skill_status.shield_active) {
         settextcolor(RGB(100, 100, 255));
-        _stprintf_s(text, _T("Shield Active: %.1f s"), skill_status.shield_duration_remaining / 60.0f);
+        _stprintf_s(text, _T("护盾效果: %.1f 秒"), skill_status.shield_duration_remaining / 60.0f);
         outtextxy(10, 100, text);
     }
     else if (skill_status.shield_ready) {
         settextcolor(RGB(100, 255, 100));
-        _stprintf_s(text, _T("Shield Ready (Q)"));
+        _stprintf_s(text, _T("护盾就绪 (Q)"));
         outtextxy(10, 100, text);
     }
     else {
         settextcolor(RGB(255, 255, 100));
-        _stprintf_s(text, _T("Shield Cooldown: %.1f s"), skill_status.shield_cooldown_remaining / 60.0f);
+        _stprintf_s(text, _T("护盾效果冷却: %.1f 秒"), skill_status.shield_cooldown_remaining / 60.0f);
         outtextxy(10, 100, text);
     }
 
     settextcolor(RGB(200, 200, 100));
-    _stprintf_s(text, _T("Sound: %s (M to toggle)"), sound_manager_.isSoundEnabled() ? _T("ON") : _T("OFF"));
+    _stprintf_s(text, _T("声音: %s (M)"), sound_manager_.isSoundEnabled() ? _T("开") : _T("关"));
     outtextxy(WINDOW_WIDTH - textwidth(text) - 10, 10, text);
 
     for (auto& enemy : enemies_) {
