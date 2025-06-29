@@ -585,7 +585,7 @@ void GameManager::globalDanmaku() {
                     }
                 }
                 else if (enemy.enemy_type_ == 1) {
-                    int bullet_count = 12 + bullet_level;
+                    int bullet_count = 5 + bullet_level;
                     float speed = 1.5f + bullet_level * 0.5f;
                     for (int i = 0; i < bullet_count; i++) {
                         float angle = (2 * 3.14159f * i) / bullet_count;
@@ -595,7 +595,7 @@ void GameManager::globalDanmaku() {
                     }
                 }
                 else {
-                    int bullet_count = 8 + bullet_level;
+                    int bullet_count = 3 + bullet_level;
                     for (int i = 0; i < bullet_count; i++) {
                         float angle = (2 * 3.14159f * i) / bullet_count;
                         float speed = 1 + bullet_level * 0.25;
