@@ -41,13 +41,15 @@ planeshootinggame/
 │       └── common.cpp
 ├── res/                     # 游戏资源
 │   ├── Textures/
+|   |   ├── BOSS.png
+|   |   ├── enemy001.png
+|   |   ├── enemy002.png
 │   │   └── FEUI.png         # 图片资源
-│   ├── Sounds/              # 音效资源（可选）
-│   └── Fonts/               # 字体资源（可选）
+│   └── Sounds/              # 音效资源
 ├── vcproj/                  # VS项目配置
 │   ├── planeshootinggame.vcxproj
 │   ├── planeshootinggame.filters
 │   └── planeshootinggame.user
 └── scripts/                 # 构建/运行脚本
-    ├── build.sh             # 构建脚本（原planeshootinggame.sh）
-    └── run.sh               # 运行脚本（可选）
+    ├── build.sh             # 构建脚本
+    └── run.sh               # 运行脚本
