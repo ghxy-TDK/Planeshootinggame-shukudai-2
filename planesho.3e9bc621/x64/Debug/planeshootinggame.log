@@ -1,12 +1,12 @@
 ﻿  GameManager.cpp
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(171,13): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(350,18): warning C4002: 类函数宏的调用“RGB”参数过多
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(384,18): warning C4002: 类函数宏的调用“RGB”参数过多
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(435,16): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(445,21): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(489,17): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(531,17): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(565,41): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(578,41): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\GameManager.cpp(612,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-  planeshootinggame.vcxproj -> D:\jxufe\CPP242\planeshootinggame06291100\Planeshootinggame-shukudai-2\x64\Debug\planeshootinggame.exe
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(172,13): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(351,18): warning C4002: 类函数宏的调用“RGB”参数过多
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(385,18): warning C4002: 类函数宏的调用“RGB”参数过多
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(436,16): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(446,21): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(490,17): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(520,17): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(554,41): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(567,41): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\GameManager.cpp(601,37): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+  planeshootinggame.vcxproj -> D:\c++\Planeshootinggame-shukudai-2-main\Planeshootinggame-shukudai-2-main\x64\Debug\planeshootinggame.exe

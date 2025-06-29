@@ -23,7 +23,8 @@ GameManager::GameManager() :
 {
     initStars();  // 初始化星星背景
     memset(key_state_, 0, sizeof(key_state_));  // 初始化按键状态数组
-    player_.loadImage();  // 加载玩家图像
+    player_.loadImage();// 加载玩家图像
+    
 }
 
 void GameManager::handleInput() {
@@ -495,33 +496,21 @@ void GameManager::spawnEnemies() {
                 type = 2;
                 boss_active_ = true;
             }
-            else {
-                type = 0;
-            }
         }
 
+        Enemy enemy(x, -30, type);
+        enemy.loadImage(); // 确保新敌人生成时加载图片
+
+        // 根据类型设置属性
         if (type == 2) {
-            Enemy enemy(x, -30, type);
             enemy.health_ = enemy.max_health_ = enemy.health_ + (level_ - 1) * 10;
-            enemies_.push_back(enemy);
-            enemy_spawn_timer_ = 0;
         }
         else if (type == 1) {
-            Enemy enemy(x, -30, type);
             enemy.health_ = enemy.max_health_ = enemy.health_ + (level_ - 1) * 2;
-            enemies_.push_back(enemy);
-            enemy_spawn_timer_ = 0;
         }
-        else if (type == 0) {
-            Enemy enemy(x, -30, type);
-            enemy.health_ = enemy.max_health_ = enemy.health_ + (level_ - 1) / 2;
-            enemies_.push_back(enemy);
-            enemy_spawn_timer_ = 0;
-        }
-    }
 
-    if (boss_spawn_cooldown_ > 0) {
-        boss_spawn_cooldown_--;
+        enemies_.push_back(enemy);
+        enemy_spawn_timer_ = 0;
     }
 }
 
