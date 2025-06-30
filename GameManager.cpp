@@ -24,7 +24,7 @@ GameManager::GameManager() :
     initStars();  // 初始化星星背景
     memset(key_state_, 0, sizeof(key_state_));  // 初始化按键状态数组
     player_.loadImage();// 加载玩家图像
-    
+
 }
 
 void GameManager::handleInput() {
@@ -35,20 +35,19 @@ void GameManager::handleInput() {
 
     // 处理菜单状态下的鼠标点击
     if (game_state_ == MENU) {
-        // 菜单选择已经在drawMenu()中处理，这里不需要额外处理
         return;
     }
 
     // 处理游戏进行中状态输入
     if (game_state_ == PLAYING) {
-        // 玩家移动控制（保持不变）
+        // 玩家移动控制
         int speed = player_.speed_;
         if (key_state_['A'] || key_state_[VK_LEFT]) player_.x = max(20.0f, player_.x - speed);
         if (key_state_['D'] || key_state_[VK_RIGHT]) player_.x = min((float)WINDOW_WIDTH - 20, player_.x + speed);
         if (key_state_['W'] || key_state_[VK_UP]) player_.y = max(20.0f, player_.y - speed);
         if (key_state_['S'] || key_state_[VK_DOWN]) player_.y = min((float)WINDOW_HEIGHT - 20, player_.y + speed);
 
-        // 射击控制（保持不变）
+        // 射击控制
         static bool prev_j_state = false;
         static bool prev_space_state = false;
         bool current_j_state = key_state_['J'];
@@ -61,7 +60,7 @@ void GameManager::handleInput() {
         prev_j_state = current_j_state;
         prev_space_state = current_space_state;
 
-        // 技能控制（保持不变）
+        // 技能控制
         static bool prev_e_state = false;
         bool current_e_state = key_state_['E'];
         if (current_e_state && !prev_e_state && laser_cooldown_ <= 0) {
@@ -82,7 +81,7 @@ void GameManager::handleInput() {
         }
         prev_q_state = current_q_state;
 
-        // 更新技能状态（保持不变）
+        // 更新技能状态
         if (laser_active_ && laser_duration_ > 0) {
             updateLaserSkill();
             laser_duration_--;
@@ -98,7 +97,7 @@ void GameManager::handleInput() {
             deactivateShieldSkill();
         }
 
-        // 自动射击逻辑（保持不变）
+        // 自动射击逻辑
         if (firing_toggle_ && bullet_cooldown_ <= 0 && !laser_active_) {
             MOUSEMSG m;
             bool mouse_found = false;
@@ -164,7 +163,7 @@ void GameManager::handleInput() {
             Sleep(200);
         }
     }
-    // 处理游戏结束状态输入（改为鼠标点击返回）
+    // 处理游戏结束状态输入
     else if (game_state_ == GAME_OVER) {
         MOUSEMSG msg;
         while (MouseHit()) {
@@ -176,7 +175,7 @@ void GameManager::handleInput() {
         }
     }
 
-    // 更新冷却时间（保持不变）
+    // 更新冷却时间
     if (bullet_cooldown_ > 0) bullet_cooldown_--;
     if (laser_cooldown_ > 0) laser_cooldown_--;
     if (shield_cooldown_ > 0) shield_cooldown_--;
@@ -315,7 +314,7 @@ void GameManager::drawMenu() {
                 switch (item.action) {
                 case 0: // 闯关模式
                     gameMode_ = STAGE_MODE;
-                    game_state_ =PLAYING;
+                    game_state_ = PLAYING;
                     resetGame();
                     return;
                 case 1: // 无尽模式
@@ -379,58 +378,16 @@ void GameManager::drawGame() {
 }
 
 void GameManager::drawUI() {
-    settextcolor(RGB(255, 255, 255));
-    settextstyle(18, 0, _T("微软雅黑"));
-
     TCHAR text[100];
-    _stprintf_s(text, _T("分数: %d  等级: %d  剩余生命: %d"), score_, level_, player_.lives_);
-    outtextxy(WINDOW_WIDTH - 300, 50, text);
 
-    _stprintf_s(text, _T("伤害: %d  移速: %d"), player_.damage_, player_.speed_);
-    outtextxy(WINDOW_WIDTH - 300, 75, text);
+    // 绘制左侧技能条
+    drawSkillBarsUI();
 
-    if (player_.attack_speed_boost_timer_ > 0) {
-        _stprintf_s(text, _T("攻速提升效果: %.1f 秒"), player_.attack_speed_boost_timer_ / 60.0f);
-        outtextxy(10, 60, text);
-    }
+    // 绘制右侧数据面板
+    drawDataPanelUI();
 
-    SkillStatus skill_status = getSkillStatus();
-
-    if (skill_status.laser_active) {
-        settextcolor(RGB(255, 100, 100));
-        _stprintf_s(text, _T("激光子弹效果: %.1f 秒"), skill_status.laser_duration_remaining / 60.0f);
-        outtextxy(10, 80, text);
-    }
-    else if (skill_status.laser_ready) {
-        settextcolor(RGB(100, 255, 100));
-        _stprintf_s(text, _T("激光子弹就绪 (E)"));
-        outtextxy(10, 80, text);
-    }
-    else {
-        settextcolor(RGB(255, 255, 100));
-        _stprintf_s(text, _T("激光子弹冷却: %.1f 秒"), skill_status.laser_cooldown_remaining / 60.0f);
-        outtextxy(10, 80, text);
-    }
-
-    if (skill_status.shield_active) {
-        settextcolor(RGB(100, 100, 255));
-        _stprintf_s(text, _T("护盾效果: %.1f 秒"), skill_status.shield_duration_remaining / 60.0f);
-        outtextxy(10, 100, text);
-    }
-    else if (skill_status.shield_ready) {
-        settextcolor(RGB(100, 255, 100));
-        _stprintf_s(text, _T("护盾就绪 (Q)"));
-        outtextxy(10, 100, text);
-    }
-    else {
-        settextcolor(RGB(255, 255, 100));
-        _stprintf_s(text, _T("护盾效果冷却: %.1f 秒"), skill_status.shield_cooldown_remaining / 60.0f);
-        outtextxy(10, 100, text);
-    }
-
-    settextcolor(RGB(200, 200, 100));
-    _stprintf_s(text, _T("声音: %s (M)"), sound_manager_.isSoundEnabled() ? _T("开") : _T("关"));
-    outtextxy(WINDOW_WIDTH - textwidth(text) - 10, 10, text);
+    // 绘制音效控制
+    drawSoundControlUI();
 
     for (auto& enemy : enemies_) {
         if (enemy.active_ && enemy.enemy_type_ == 2) {
@@ -453,6 +410,319 @@ void GameManager::drawUI() {
             break;
         }
     }
+}
+
+void GameManager::drawSkillBarsUI() {
+    SkillStatus skill_status = getSkillStatus();
+
+    // 技能条基础参数
+    const int BAR_WIDTH = 25;
+    const int BAR_HEIGHT = 200;
+    const int BAR_X = 20;
+    const int LASER_BAR_Y = 120;
+    const int SHIELD_BAR_Y = 340;
+
+    // 绘制激光技能条
+    drawVerticalSkillBar1(BAR_X, LASER_BAR_Y, BAR_WIDTH, BAR_HEIGHT,
+        skill_status.laser_active, skill_status.laser_ready,
+        skill_status.laser_duration_remaining, skill_status.laser_cooldown_remaining,
+        RGB(255, 50, 50), RGB(255, 150, 150), _T("LASER"), _T("E"));
+
+    // 绘制护盾技能条
+    drawVerticalSkillBar2(BAR_X, SHIELD_BAR_Y, BAR_WIDTH, BAR_HEIGHT,
+        skill_status.shield_active, skill_status.shield_ready,
+        skill_status.shield_duration_remaining, skill_status.shield_cooldown_remaining,
+        RGB(50, 150, 255), RGB(150, 200, 255), _T("SHIELD"), _T("Q"));
+}
+
+void GameManager::drawVerticalSkillBar1(int x, int y, int width, int height,
+    bool active, bool ready, float duration, float cooldown,
+    COLORREF primary_color, COLORREF glow_color,
+    const TCHAR* skill_name, const TCHAR* key_bind) {
+    // 绘制外边框（科幻感边框）
+    setlinecolor(RGB(100, 200, 255));
+    setlinestyle(PS_SOLID, 2);
+    rectangle(x - 2, y - 2, x + width + 2, y + height + 2);
+
+    // 绘制内部背景
+    setfillcolor(RGB(10, 20, 40));
+    solidrectangle(x, y, x + width, y + height);
+
+    float fill_percentage = 0.0f;
+    COLORREF bar_color = RGB(50, 50, 50);
+
+    if (active) {
+        // 技能激活状态 - 持续时间3秒
+        fill_percentage = duration / (3.0f * 60.0f); // 3秒 * 60帧/秒
+        if (fill_percentage > 1.0f) fill_percentage = 1.0f;
+        bar_color = primary_color;
+
+        // 添加脉动效果
+        int pulse = (int)(sin(GetTickCount() * 0.01) * 20 + 20);
+        bar_color = RGB(min(255, GetRValue(bar_color) + pulse),
+            min(255, GetGValue(bar_color) + pulse / 2),
+            min(255, GetBValue(bar_color) + pulse / 2));
+    }
+    else if (ready) {
+        // 技能就绪状态
+        fill_percentage = 1.0f;
+        bar_color = RGB(50, 255, 50);
+
+        // 添加闪烁效果
+        int blink = (int)(sin(GetTickCount() * 0.02) * 50 + 200);
+        bar_color = RGB(50, blink, 50);
+    }
+    else {
+        // 冷却状态 - 冷却时间10秒
+        fill_percentage = 1.0f - (cooldown / (10.0f * 60.0f)); // 10秒 * 60帧/秒
+        if (fill_percentage < 0.0f) fill_percentage = 0.0f;
+        bar_color = RGB(100, 100, 100);
+    }
+
+    // 绘制进度条
+    int fill_height = (int)(height * fill_percentage);
+    if (fill_height > 0) {
+        setfillcolor(bar_color);
+        solidrectangle(x + 2, y + height - fill_height, x + width - 2, y + height - 2);
+
+        // 添加光晕效果
+        if (active || ready) {
+            for (int i = 1; i <= 3; i++) {
+                setlinecolor(RGB(GetRValue(glow_color) / (i * 2),
+                    GetGValue(glow_color) / (i * 2),
+                    GetBValue(glow_color) / (i * 2)));
+                rectangle(x - i, y + height - fill_height - i,
+                    x + width + i, y + height + i);
+            }
+        }
+    }
+
+    // 绘制刻度线
+    setlinecolor(RGB(100, 150, 200));
+    for (int i = 1; i < 4; i++) {
+        int mark_y = y + (height * i / 4);
+        line(x + width - 5, mark_y, x + width, mark_y);
+    }
+
+    // 绘制技能名称和按键提示
+    settextcolor(RGB(200, 200, 255));
+    settextstyle(12, 0, _T("微软雅黑"));
+
+    // 技能名显示在技能条上方
+    outtextxy(x - 5, y - 20, skill_name);
+
+    // 按键提示显示在技能条下方
+    settextcolor(RGB(255, 255, 100));
+    settextstyle(16, 0, _T("微软雅黑"));
+    outtextxy(x + 5, y + height + 5, key_bind);
+}
+
+void GameManager::drawVerticalSkillBar2(int x, int y, int width, int height,
+    bool active, bool ready, float duration, float cooldown,
+    COLORREF primary_color, COLORREF glow_color,
+    const TCHAR* skill_name, const TCHAR* key_bind) {
+    // 绘制外边框（科幻感边框）
+    setlinecolor(RGB(100, 200, 255));
+    setlinestyle(PS_SOLID, 2);
+    rectangle(x - 2, y - 2, x + width + 2, y + height + 2);
+
+    // 绘制内部背景
+    setfillcolor(RGB(10, 20, 40));
+    solidrectangle(x, y, x + width, y + height);
+
+    float fill_percentage = 0.0f;
+    COLORREF bar_color = RGB(50, 50, 50);
+
+    if (active) {
+        // 技能激活状态 - 持续时间5秒
+        fill_percentage = duration / (5.0f * 60.0f); // 5秒 * 60帧/秒
+        if (fill_percentage > 1.0f) fill_percentage = 1.0f;
+        bar_color = primary_color;
+
+        // 添加脉动效果
+        int pulse = (int)(sin(GetTickCount() * 0.01) * 20 + 20);
+        bar_color = RGB(min(255, GetRValue(bar_color) + pulse),
+            min(255, GetGValue(bar_color) + pulse / 2),
+            min(255, GetBValue(bar_color) + pulse / 2));
+    }
+    else if (ready) {
+        // 技能就绪状态
+        fill_percentage = 1.0f;
+        bar_color = RGB(50, 255, 50);
+
+        // 添加闪烁效果
+        int blink = (int)(sin(GetTickCount() * 0.02) * 50 + 200);
+        bar_color = RGB(50, blink, 50);
+    }
+    else {
+        // 冷却状态 - 冷却时间15秒
+        fill_percentage = 1.0f - (cooldown / (15.0f * 60.0f)); // 15秒 * 60帧/秒
+        if (fill_percentage < 0.0f) fill_percentage = 0.0f;
+        bar_color = RGB(100, 100, 100);
+    }
+
+    // 绘制进度条
+    int fill_height = (int)(height * fill_percentage);
+    if (fill_height > 0) {
+        setfillcolor(bar_color);
+        solidrectangle(x + 2, y + height - fill_height, x + width - 2, y + height - 2);
+
+        // 添加光晕效果
+        if (active || ready) {
+            for (int i = 1; i <= 3; i++) {
+                setlinecolor(RGB(GetRValue(glow_color) / (i * 2),
+                    GetGValue(glow_color) / (i * 2),
+                    GetBValue(glow_color) / (i * 2)));
+                rectangle(x - i, y + height - fill_height - i,
+                    x + width + i, y + height + i);
+            }
+        }
+    }
+
+    // 绘制刻度线
+    setlinecolor(RGB(100, 150, 200));
+    for (int i = 1; i < 4; i++) {
+        int mark_y = y + (height * i / 4);
+        line(x + width - 5, mark_y, x + width, mark_y);
+    }
+
+    // 绘制技能名称和按键提示
+    settextcolor(RGB(200, 200, 255));
+    settextstyle(12, 0, _T("微软雅黑"));
+
+    // 技能名显示在技能条上方
+    outtextxy(x - 5, y - 20, skill_name);
+
+    // 按键提示显示在技能条下方
+    settextcolor(RGB(255, 255, 100));
+    settextstyle(16, 0, _T("微软雅黑"));
+    outtextxy(x + 5, y + height + 5, key_bind);
+}
+
+void GameManager::drawDataPanelUI() {
+    // 数据面板参数
+    const int PANEL_WIDTH = 240;
+    const int PANEL_HEIGHT = 140;
+    const int PANEL_X = WINDOW_WIDTH - PANEL_WIDTH - 10;
+    const int PANEL_Y = 10;
+
+    // 绘制面板背景
+    drawSciFiPanelBackground(PANEL_X, PANEL_Y, PANEL_WIDTH, PANEL_HEIGHT);
+
+    // 绘制数据条
+    drawHorizontalDataBar(PANEL_X + 10, PANEL_Y + 10, _T("SCORE"), score_, 9999, RGB(255, 215, 0));
+    drawHorizontalDataBar(PANEL_X + 10, PANEL_Y + 35, _T("LEVEL"), level_, 15, RGB(0, 255, 255));
+    drawHorizontalDataBar(PANEL_X + 10, PANEL_Y + 60, _T("LIVES"), player_.lives_, 9, RGB(255, 100, 100));
+    drawHorizontalDataBar(PANEL_X + 10, PANEL_Y + 85, _T("DAMAGE"), player_.damage_, 10, RGB(255, 150, 0));
+    drawHorizontalDataBar(PANEL_X + 10, PANEL_Y + 110, _T("SPEED"), player_.speed_, 15, RGB(100, 255, 150));
+
+    // 攻速提升效果提示
+    if (player_.attack_speed_boost_timer_ > 0) {
+        drawAttackBoostEffect(WINDOW_WIDTH - 1070, 50);
+    }
+}
+
+void GameManager::drawSciFiPanelBackground(int x, int y, int width, int height) {
+    // 外框光晕
+    for (int i = 0; i < 5; i++) {
+        setlinecolor(RGB(50 - i * 8, 150 - i * 20, 255 - i * 30));
+        setlinestyle(PS_SOLID, 1);
+        rectangle(x - i, y - i, x + width + i, y + height + i);
+    }
+
+    // 半透明背景
+    setfillcolor(RGB(5, 15, 35));
+    solidrectangle(x, y, x + width, y + height);
+
+    // 内部装饰线条
+    setlinecolor(RGB(100, 200, 255));
+    line(x + 5, y + 5, x + width - 5, y + 5);
+    line(x + 5, y + height - 5, x + width - 5, y + height - 5);
+}
+
+void GameManager::drawHorizontalDataBar(int x, int y, const TCHAR* label, int value, int max_value, COLORREF color) {
+    const int LABEL_WIDTH = 70;
+    const int BAR_WIDTH = 120;
+    const int BAR_HEIGHT = 15;
+    const int VALUE_WIDTH = 60;
+
+    // 标签
+    settextcolor(RGB(200, 200, 255));
+    settextstyle(12, 0, _T("微软雅黑"));
+    outtextxy(x, y + 2, label);
+
+    // 数值条背景
+    setfillcolor(RGB(20, 30, 50));
+    solidrectangle(x + LABEL_WIDTH, y, x + LABEL_WIDTH + BAR_WIDTH, y + BAR_HEIGHT);
+
+    // 数值条填充
+    float percentage = (float)value / max_value;
+    if (percentage > 1.0f) percentage = 1.0f;
+    int fill_width = (int)(BAR_WIDTH * percentage);
+
+    if (fill_width > 0) {
+        setfillcolor(color);
+        solidrectangle(x + LABEL_WIDTH + 1, y + 1, x + LABEL_WIDTH + fill_width - 1, y + BAR_HEIGHT - 1);
+
+        // 添加闪光效果
+        COLORREF highlight = RGB(min(255, GetRValue(color) + 50),
+            min(255, GetGValue(color) + 50),
+            min(255, GetBValue(color) + 50));
+        setfillcolor(highlight);
+        solidrectangle(x + LABEL_WIDTH + 1, y + 1, x + LABEL_WIDTH + fill_width - 1, y + 4);
+    }
+
+    // 边框
+    setlinecolor(RGB(100, 150, 200));
+    rectangle(x + LABEL_WIDTH, y, x + LABEL_WIDTH + BAR_WIDTH, y + BAR_HEIGHT);
+
+    // 数值显示
+    settextcolor(RGB(255, 255, 255));
+    settextstyle(12, 0, _T("微软雅黑"));
+    TCHAR value_text[20];
+    _stprintf_s(value_text, _T("%d"), value);
+    outtextxy(x + LABEL_WIDTH + BAR_WIDTH + 5, y + 2, value_text);
+}
+
+void GameManager::drawAttackBoostEffect(int x, int y) {
+    // 攻速提升效果的动态显示
+    TCHAR boost_text[50];
+    _stprintf_s(boost_text, _T("⚡ BOOST: %.1fs"), player_.attack_speed_boost_timer_ / 60.0f);
+
+    // 添加闪烁效果
+    int alpha = (int)(sin(GetTickCount() * 0.02) * 100 + 155);
+    settextcolor(RGB(255, 255, alpha));
+    settextstyle(14, 0, _T("微软雅黑"));
+
+    // 绘制背景框
+    int text_width = textwidth(boost_text);
+    setfillcolor(RGB(50, 50, 0));
+    solidrectangle(x, y, x + text_width + 10, y + 25);
+    setlinecolor(RGB(255, 255, 100));
+    rectangle(x, y, x + text_width + 10, y + 25);
+
+    outtextxy(x + 5, y + 5, boost_text);
+}
+
+void GameManager::drawSoundControlUI() {
+    const int CONTROL_X = WINDOW_WIDTH - 1070;
+    const int CONTROL_Y = 10;
+
+    // 音效控制背景
+    setfillcolor(RGB(10, 20, 40));
+    solidrectangle(CONTROL_X, CONTROL_Y, CONTROL_X + 110, CONTROL_Y + 25);
+
+    setlinecolor(RGB(100, 150, 200));
+    rectangle(CONTROL_X, CONTROL_Y, CONTROL_X + 110, CONTROL_Y + 25);
+
+    // 音效图标和状态
+    settextcolor(sound_manager_.isSoundEnabled() ? RGB(100, 255, 100) : RGB(255, 100, 100));
+    settextstyle(12, 0, _T("微软雅黑"));
+
+    TCHAR sound_text[30];
+    _stprintf_s(sound_text, _T("SOUND %s (M)"),
+        sound_manager_.isSoundEnabled() ? _T("ON") : _T("OFF"));
+    outtextxy(CONTROL_X + 5, CONTROL_Y + 6, sound_text);
 }
 
 void GameManager::drawPauseScreen() {
@@ -578,7 +848,7 @@ void GameManager::resetGame() {
     powerups_.clear();
     explosions_.clear();
     score_ = 0;
-    level_ = 4;
+    level_ = 1;
     enemy_spawn_timer_ = bullet_cooldown_ = powerup_timer_ = danmaku_global_timer_ = 0;
     boss_spawn_cooldown_ = 0;
     boss_active_ = false;
@@ -693,7 +963,7 @@ void GameManager::globalDanmaku() {
                     }
                 }
                 else if (enemy.enemy_type_ == 1) {
-                    int bullet_count = 5 + bullet_level;
+                    int bullet_count = 4 + bullet_level;
                     float speed = 1.5f + bullet_level * 0.5f;
                     for (int i = 0; i < bullet_count; i++) {
                         float angle = (2 * 3.14159f * i) / bullet_count;
@@ -703,7 +973,7 @@ void GameManager::globalDanmaku() {
                     }
                 }
                 else {
-                    int bullet_count = 3 + bullet_level;
+                    int bullet_count = 2 + bullet_level;
                     for (int i = 0; i < bullet_count; i++) {
                         float angle = (2 * 3.14159f * i) / bullet_count;
                         float speed = 1 + bullet_level * 0.25;
@@ -773,7 +1043,7 @@ void GameManager::checkCollisions() {
                             boss_spawn_cooldown_ = 60 * 10;
                         }
 
-                        int new_level = score_ / 300 + 1;
+                        int new_level = score_ / 200 + 1;
                         if (new_level > level_) {
                             level_ = new_level;
                             if (level_ % 3 == 0) player_.damage_++;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "common.h"
 #include "Player.h"
 #include "Bullet.h"
@@ -8,10 +8,10 @@
 #include "SoundManager.h"
 #include <vector>
 
-// ¹ÜÀíÓÎÏ·ÕûÌåÂß¼­
+// ç®¡ç†æ¸¸æˆæ•´ä½“é€»è¾‘
 enum GameMode {
-    STAGE_MODE,  // ´³¹ØÄ£Ê½
-    ENDLESS_MODE // ÎŞ¾¡Ä£Ê½
+    STAGE_MODE,  // é—¯å…³æ¨¡å¼
+    ENDLESS_MODE // æ— å°½æ¨¡å¼
 };
 class GameManager {
 private:
@@ -36,7 +36,7 @@ private:
     bool prev_space_state_ = false;
     bool prev_e_state_ = false;
     bool prev_q_state_ = false;
-    // ¼¼ÄÜÏµÍ³Ïà¹Ø±äÁ¿
+    // æŠ€èƒ½ç³»ç»Ÿç›¸å…³å˜é‡
     bool laser_active_;
     int laser_duration_;
     int laser_cooldown_;
@@ -45,7 +45,7 @@ private:
     int shield_duration_;
     int shield_cooldown_;
 
-    // ¼¼ÄÜ³£Á¿
+    // æŠ€èƒ½å¸¸é‡
     static const int LASER_DURATION_TIME = 180;
     static const int LASER_COOLDOWN_TIME = 600;
     static const int SHIELD_DURATION_TIME = 300;
@@ -64,6 +64,20 @@ private:
     void deactivateLaserSkill();
     void activateShieldSkill();
     void deactivateShieldSkill();
+    void drawSkillBarsUI();
+    void drawVerticalSkillBar1(int x, int y, int width, int height,
+        bool active, bool ready, float duration, float cooldown,
+        COLORREF primary_color, COLORREF glow_color,
+        const TCHAR* skill_name, const TCHAR* key_bind);
+    void drawVerticalSkillBar2(int x, int y, int width, int height,
+        bool active, bool ready, float duration, float cooldown,
+        COLORREF primary_color, COLORREF glow_color,
+        const TCHAR* skill_name, const TCHAR* key_bind);
+    void drawDataPanelUI();
+    void drawSciFiPanelBackground(int x, int y, int width, int height);
+    void drawHorizontalDataBar(int x, int y, const TCHAR* label, int value, int max_value, COLORREF color);
+    void drawAttackBoostEffect(int x, int y);
+    void drawSoundControlUI();
 
 public:
     struct SkillStatus {
@@ -96,4 +110,3 @@ public:
     SkillStatus getSkillStatus();
     GameMode gameMode_;
 };
-
