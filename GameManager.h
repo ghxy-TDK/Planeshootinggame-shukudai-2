@@ -9,6 +9,10 @@
 #include <vector>
 
 // 管理游戏整体逻辑
+enum GameMode {
+    STAGE_MODE,  // 闯关模式
+    ENDLESS_MODE // 无尽模式
+};
 class GameManager {
 private:
     Star stars_[MAX_STAR];
@@ -26,7 +30,12 @@ private:
     bool boss_active_;
     bool running_;
     bool firing_toggle_;
-
+    bool prev_pause_state_ = false;
+    bool prev_mute_state_ = false;
+    bool prev_j_state_ = false;
+    bool prev_space_state_ = false;
+    bool prev_e_state_ = false;
+    bool prev_q_state_ = false;
     // 技能系统相关变量
     bool laser_active_;
     int laser_duration_;
@@ -85,5 +94,6 @@ public:
     void cleanupResources();
     bool isPlayerShielded();
     SkillStatus getSkillStatus();
+    GameMode gameMode_;
 };
 

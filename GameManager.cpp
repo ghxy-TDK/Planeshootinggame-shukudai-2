@@ -28,24 +28,31 @@ GameManager::GameManager() :
 }
 
 void GameManager::handleInput() {
-    for (int i = 0; i < 256; i++) key_state_[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
-
-    if (game_state_ == MENU && (key_state_[VK_RETURN] || key_state_[VK_SPACE])) {
-        game_state_ = PLAYING;
-        resetGame();
-        sound_manager_.playBGM();
+    // 更新所有按键状态（仅用于游戏控制，不用于菜单导航）
+    for (int i = 0; i < 256; i++) {
+        key_state_[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
     }
-    else if (game_state_ == PLAYING) {
+
+    // 处理菜单状态下的鼠标点击
+    if (game_state_ == MENU) {
+        // 菜单选择已经在drawMenu()中处理，这里不需要额外处理
+        return;
+    }
+
+    // 处理游戏进行中状态输入
+    if (game_state_ == PLAYING) {
+        // 玩家移动控制（保持不变）
         int speed = player_.speed_;
         if (key_state_['A'] || key_state_[VK_LEFT]) player_.x = max(20.0f, player_.x - speed);
         if (key_state_['D'] || key_state_[VK_RIGHT]) player_.x = min((float)WINDOW_WIDTH - 20, player_.x + speed);
         if (key_state_['W'] || key_state_[VK_UP]) player_.y = max(20.0f, player_.y - speed);
         if (key_state_['S'] || key_state_[VK_DOWN]) player_.y = min((float)WINDOW_HEIGHT - 20, player_.y + speed);
 
+        // 射击控制（保持不变）
         static bool prev_j_state = false;
         static bool prev_space_state = false;
-        bool current_j_state = (GetAsyncKeyState('J') & 0x8000) != 0;
-        bool current_space_state = (GetAsyncKeyState(VK_SPACE) & 0x8000) != 0;
+        bool current_j_state = key_state_['J'];
+        bool current_space_state = key_state_[VK_SPACE];
 
         if ((current_j_state && !prev_j_state) || (current_space_state && !prev_space_state)) {
             firing_toggle_ = !firing_toggle_;
@@ -54,8 +61,9 @@ void GameManager::handleInput() {
         prev_j_state = current_j_state;
         prev_space_state = current_space_state;
 
+        // 技能控制（保持不变）
         static bool prev_e_state = false;
-        bool current_e_state = (GetAsyncKeyState('E') & 0x8000) != 0;
+        bool current_e_state = key_state_['E'];
         if (current_e_state && !prev_e_state && laser_cooldown_ <= 0) {
             activateLaserSkill();
             laser_cooldown_ = LASER_COOLDOWN_TIME;
@@ -65,7 +73,7 @@ void GameManager::handleInput() {
         prev_e_state = current_e_state;
 
         static bool prev_q_state = false;
-        bool current_q_state = (GetAsyncKeyState('Q') & 0x8000) != 0;
+        bool current_q_state = key_state_['Q'];
         if (current_q_state && !prev_q_state && shield_cooldown_ <= 0) {
             activateShieldSkill();
             shield_cooldown_ = SHIELD_COOLDOWN_TIME;
@@ -74,6 +82,7 @@ void GameManager::handleInput() {
         }
         prev_q_state = current_q_state;
 
+        // 更新技能状态（保持不变）
         if (laser_active_ && laser_duration_ > 0) {
             updateLaserSkill();
             laser_duration_--;
@@ -89,6 +98,7 @@ void GameManager::handleInput() {
             deactivateShieldSkill();
         }
 
+        // 自动射击逻辑（保持不变）
         if (firing_toggle_ && bullet_cooldown_ <= 0 && !laser_active_) {
             MOUSEMSG m;
             bool mouse_found = false;
@@ -107,34 +117,74 @@ void GameManager::handleInput() {
             float distance = sqrt(dx * dx + dy * dy);
             if (distance < 1.0f) distance = 1.0f;
             float bullet_speed = 10.0f;
-            bullets_.push_back(Bullet(player_.x, player_.y - 20, 0, (dx / distance) * bullet_speed, (dy / distance) * bullet_speed, player_.damage_));
+            bullets_.push_back(Bullet(player_.x, player_.y - 20, 0,
+                (dx / distance) * bullet_speed,
+                (dy / distance) * bullet_speed,
+                player_.damage_));
             bullet_cooldown_ = (player_.attack_speed_boost_timer_ > 0) ? 3 : 6;
             sound_manager_.playEffect("shoot");
         }
 
-        if (key_state_['P']) {
+        // 暂停游戏（保持不变）
+        if (key_state_['P'] && !prev_pause_state_) {
             game_state_ = PAUSED;
             Sleep(200);
         }
+        static bool prev_pause_state_ = key_state_['P'];
 
-        if (key_state_['M']) {
+        // 声音开关（保持不变）
+        if (key_state_['M'] && !prev_mute_state_) {
             sound_manager_.toggleSound();
             Sleep(200);
         }
+        static bool prev_mute_state_ = key_state_['M'];
     }
-    else if (game_state_ == PAUSED && key_state_['P']) {
-        game_state_ = PLAYING;
-        Sleep(200);
+    // 处理暂停状态输入（添加鼠标点击继续功能）
+    else if (game_state_ == PAUSED) {
+        // 键盘继续
+        if (key_state_['P'] && !prev_pause_state_) {
+            game_state_ = PLAYING;
+            Sleep(200);
+        }
+        prev_pause_state_ = key_state_['P'];
+
+        // 鼠标点击继续
+        MOUSEMSG msg;
+        while (MouseHit()) {
+            msg = GetMouseMsg();
+            if (msg.uMsg == WM_LBUTTONDOWN) {
+                game_state_ = PLAYING;
+                Sleep(200);
+            }
+        }
+
+        // 返回菜单
+        if (key_state_[VK_ESCAPE]) {
+            game_state_ = MENU;
+            Sleep(200);
+        }
     }
-    else if (game_state_ == GAME_OVER && key_state_['R']) {
-        game_state_ = MENU;
+    // 处理游戏结束状态输入（改为鼠标点击返回）
+    else if (game_state_ == GAME_OVER) {
+        MOUSEMSG msg;
+        while (MouseHit()) {
+            msg = GetMouseMsg();
+            if (msg.uMsg == WM_LBUTTONDOWN) {
+                game_state_ = MENU;
+                Sleep(200);
+            }
+        }
     }
 
+    // 更新冷却时间（保持不变）
     if (bullet_cooldown_ > 0) bullet_cooldown_--;
     if (laser_cooldown_ > 0) laser_cooldown_--;
     if (shield_cooldown_ > 0) shield_cooldown_--;
-}
 
+    if (player_.attack_speed_boost_timer_ > 0) {
+        player_.attack_speed_boost_timer_--;
+    }
+}
 void GameManager::activateLaserSkill() {
     laser_active_ = true;
     laser_duration_ = LASER_DURATION_TIME;
@@ -223,27 +273,89 @@ void GameManager::drawMenu() {
     cleardevice();
     updateStars();
 
-    drawGradientText(WINDOW_WIDTH / 2 - 250, 100, _T("宇 宙 飞 机 大 战"), 60,
+    // 绘制标题
+    drawGradientText(WINDOW_WIDTH / 2 - 250, 80, _T("宇 宙 飞 机 大 战"), 60,
         RGB(0, 150, 255), RGB(150, 0, 255), 1.3f);
 
     setlinecolor(RGB(100, 150, 255));
-    line(WINDOW_WIDTH / 2 - 220, 180, WINDOW_WIDTH / 2 + 220, 180);
+    line(WINDOW_WIDTH / 2 - 220, 160, WINDOW_WIDTH / 2 + 220, 160);
 
     settextcolor(RGB(100, 200, 255));
     settextstyle(24, 0, _T("微软雅黑"));
-    outtextxy(WINDOW_WIDTH / 2 - 140, 200, _T("穿越星际的终极战斗"));
+    outtextxy(WINDOW_WIDTH / 2 - 140, 180, _T("穿越星际的终极战斗"));
 
-    drawBlinkingText(WINDOW_WIDTH / 2 - 120, 280, _T("按Enter键开始游戏"), 30, RGB(255, 255, 0), RGB(255, 100, 0), 30);
+    // 菜单选项区域背景
+    setfillcolor(RGB(0, 0, 0, 150));
+    solidrectangle(WINDOW_WIDTH / 2 - 150, 250, WINDOW_WIDTH / 2 + 150, 500);
 
+    // 定义菜单项
+    struct MenuItem {
+        TCHAR text[50];
+        int y;
+        bool hovered;
+        int action; // 0:闯关模式 1:无尽模式 2:退出游戏
+    } menuItems[3] = {
+        {_T("闯关模式"), 280, false, 0},
+        {_T("无尽模式"), 350, false, 1},
+        {_T("退出游戏"), 420, false, 2}
+    };
+
+    // 获取鼠标位置
+    MOUSEMSG msg;
+    while (MouseHit()) {
+        msg = GetMouseMsg();
+
+        // 检查鼠标悬停
+        for (auto& item : menuItems) {
+            item.hovered = (msg.x >= WINDOW_WIDTH / 2 - 120 && msg.x <= WINDOW_WIDTH / 2 + 120 &&
+                msg.y >= item.y - 20 && msg.y <= item.y + 20);
+
+            // 检查鼠标点击
+            if (item.hovered && msg.uMsg == WM_LBUTTONDOWN) {
+                switch (item.action) {
+                case 0: // 闯关模式
+                    gameMode_ = STAGE_MODE;
+                    game_state_ =PLAYING;
+                    resetGame();
+                    return;
+                case 1: // 无尽模式
+                    gameMode_ = ENDLESS_MODE;
+                    game_state_ = PLAYING;
+                    resetGame();
+                    return;
+                case 2: // 退出游戏
+                    exit(0);
+                    return;
+                }
+            }
+        }
+    }
+
+    // 绘制菜单项
+    settextstyle(30, 0, _T("微软雅黑"));
+    for (const auto& item : menuItems) {
+        if (item.hovered) {
+            settextcolor(RGB(255, 215, 0)); // 悬停时金色
+            setfillcolor(RGB(50, 50, 100, 150));
+            solidrectangle(WINDOW_WIDTH / 2 - 120, item.y - 25, WINDOW_WIDTH / 2 + 120, item.y + 25);
+        }
+        else {
+            settextcolor(RGB(200, 200, 255)); // 普通状态
+        }
+
+        outtextxy(WINDOW_WIDTH / 2 - textwidth(item.text) / 2, item.y - 15, item.text);
+    }
+
+    // 绘制控制说明
     settextcolor(RGB(200, 200, 255));
     settextstyle(18, 0, _T("Arial"));
-    outtextxy(WINDOW_WIDTH / 2 - 120, 350, _T("控制方式:"));
-    outtextxy(WINDOW_WIDTH / 2 - 120, 380, _T("WASD/方向键: 移动飞船"));
-    outtextxy(WINDOW_WIDTH / 2 - 120, 410, _T("空格/J键: 发射子弹"));
-    outtextxy(WINDOW_WIDTH / 2 - 120, 440, _T("E键: 发射激光"));
-    outtextxy(WINDOW_WIDTH / 2 - 120, 470, _T("Q键: 展开护盾"));
-    outtextxy(WINDOW_WIDTH / 2 - 120, 500, _T("P键: 暂停游戏"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 520, _T("控制方式:"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 550, _T("WASD/方向键: 移动飞船"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 580, _T("空格/J键: 发射子弹"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 610, _T("E键: 发射激光"));
+    outtextxy(WINDOW_WIDTH / 2 - 120, 640, _T("Q键: 展开护盾"));
 
+    // 声音设置
     settextcolor(sound_manager_.isSoundEnabled() ?
         RGB(150, 255, 150) :
         RGB(255, 100, 100));
@@ -253,11 +365,7 @@ void GameManager::drawMenu() {
     _stprintf_s(soundText, _T("%s 声音: %s (M键切换)"),
         sound_manager_.isSoundEnabled() ? _T("🔊") : _T("🔇"),
         sound_manager_.isSoundEnabled() ? _T("开") : _T("关"));
-    outtextxy(WINDOW_WIDTH / 2 - textwidth(soundText) / 2 - 70, 530, soundText);
-
-    settextcolor(RGB(150, 255, 150));
-    settextstyle(18, 0, _T("微软雅黑"));
-    outtextxy(WINDOW_WIDTH / 2 - 120, 560, _T("收集能量道具增强你的飞船!"));
+    outtextxy(WINDOW_WIDTH / 2 - textwidth(soundText) / 2, 670, soundText);
 }
 
 void GameManager::drawGame() {
@@ -470,7 +578,7 @@ void GameManager::resetGame() {
     powerups_.clear();
     explosions_.clear();
     score_ = 0;
-    level_ = 1;
+    level_ = 4;
     enemy_spawn_timer_ = bullet_cooldown_ = powerup_timer_ = danmaku_global_timer_ = 0;
     boss_spawn_cooldown_ = 0;
     boss_active_ = false;
