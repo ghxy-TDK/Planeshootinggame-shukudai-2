@@ -12,55 +12,44 @@
 ## 📁 项目结构
 ```plaintext
 planeshootinggame/
-├── include/                  # 公共头文件目录
-│   ├── GameObjects/          # 游戏对象相关头文件
+├── include/                  # 所有头文件
+│   ├── Game/
 │   │   ├── Bullet.h
 │   │   ├── Enemy.h
 │   │   ├── Explosion.h
-│   │   ├── GameObject.h      # 基类
+│   │   ├── GameObject.h
 │   │   ├── Player.h
 │   │   └── PowerUp.h
-│   ├── Managers/             # 管理类头文件
+│   ├── Managers/
 │   │   ├── GameManager.h
 │   │   └── SoundManager.h
-│   └── Utils/                # 工具类头文件
-│       └── common.h
-│
-├── src/                      # 源代码目录
-│   ├── GameObjects/          # 游戏对象实现
+│   └── Utils/
+│       ├── common.h
+│       └── Constants.h      # 建议添加的常量定义文件
+├── src/                     # 所有源代码
+│   ├── Game/
 │   │   ├── Bullet.cpp
 │   │   ├── Enemy.cpp
 │   │   ├── Explosion.cpp
 │   │   ├── GameObject.cpp
 │   │   ├── Player.cpp
 │   │   └── PowerUp.cpp
-│   │
-│   ├── Managers/             # 管理类实现
-│   │   ├── GameManager/      # GameManager子模块
-│   │   │   ├── GameManager.cpp
-│   │   │   ├── GameManager_Collision.cpp
-│   │   │   ├── GameManager_Draw.cpp
-│   │   │   ├── GameManager_Input.cpp
-│   │   │   ├── GameManager_Skill.cpp
-│   │   │   ├── GameManager_Spawn.cpp
-│   │   │   └── GameManager_Update.cpp
+│   ├── Managers/
+│   │   ├── GameManager.cpp
 │   │   └── SoundManager.cpp
-│   │
-│   ├── Utils/                # 工具类实现
-│   │   └── common.cpp
-│   │
-│   └── planeshootinggame.cpp # 主程序入口
-│
-├── res/                      # 游戏资源
-│   ├── Textures/             # 纹理资源
-│   │   ├── BOSS.png
-│   │   ├── enemy001.png
-│   │   ├── enemy002.png
-│   │   └── FEUI.png
-│   └── Sounds/               # 音效资源
-│   │   └── backgroundmusic2.wma
-│
-└── vcproj/                   # VS项目配置
-    ├── planeshootinggame.vcxproj
-    ├── planeshootinggame.filters
-    └── planeshootinggame.user
+│   └── Utils/
+│       └── common.cpp
+├── res/                     # 游戏资源
+│   ├── Textures/
+|   |   ├── BOSS.png
+|   |   ├── enemy001.png
+|   |   ├── enemy002.png
+│   │   └── FEUI.png         # 图片资源
+│   └── Sounds/              # 音效资源
+├── vcproj/                  # VS项目配置
+│   ├── planeshootinggame.vcxproj
+│   ├── planeshootinggame.filters
+│   └── planeshootinggame.user
+└── scripts/                 # 构建/运行脚本
+    ├── build.sh             # 构建脚本
+    └── run.sh               # 运行脚本
