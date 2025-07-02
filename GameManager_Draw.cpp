@@ -74,7 +74,6 @@ void GameManager::resetGame() {
     shield_cooldown_ = 0;
 }
 
-// 补齐缺失的函数定义
 void GameManager::drawMenu() {
     cleardevice();
     updateStars();
@@ -246,7 +245,7 @@ void GameManager::drawVerticalSkillBar1(int x, int y, int width, int height,
     bool active, bool ready, float duration, float cooldown,
     COLORREF primary_color, COLORREF glow_color,
     const TCHAR* skill_name, const TCHAR* key_bind) {
-    // 绘制外边框（科幻感边框）
+    // 绘制外边框
     setlinecolor(RGB(100, 200, 255));
     setlinestyle(PS_SOLID, 2);
     rectangle(x - 2, y - 2, x + width + 2, y + height + 2);
@@ -328,7 +327,7 @@ void GameManager::drawVerticalSkillBar2(int x, int y, int width, int height,
     bool active, bool ready, float duration, float cooldown,
     COLORREF primary_color, COLORREF glow_color,
     const TCHAR* skill_name, const TCHAR* key_bind) {
-    // 绘制外边框（科幻感边框）
+    // 绘制外边框
     setlinecolor(RGB(100, 200, 255));
     setlinestyle(PS_SOLID, 2);
     rectangle(x - 2, y - 2, x + width + 2, y + height + 2);

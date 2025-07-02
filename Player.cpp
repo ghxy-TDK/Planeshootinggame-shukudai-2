@@ -40,7 +40,7 @@ void Player::heal() {
 void Player::drawShield() {
     if (shield_active_) {
 
-        // 绘制多个同心圆，颜色逐渐变浅，营造半透明效果
+        // 绘制多个同心圆
         setlinecolor(RGB(0, 150, 255));
         setlinestyle(PS_SOLID, 1);
 

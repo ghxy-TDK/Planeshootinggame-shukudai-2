@@ -128,15 +128,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="common.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameManager_Collision.cpp" />
+    <ClCompile Include="GameManager_Draw.cpp" />
+    <ClCompile Include="GameManager_Skill.cpp" />
+    <ClCompile Include="GameManager_Spawn.cpp" />
+    <ClCompile Include="GameManager_Update.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="planeshootinggame.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="GameManager_Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
