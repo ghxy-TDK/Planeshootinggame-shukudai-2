@@ -12,7 +12,7 @@
 ## 📁 项目结构
 ```plaintext
 planeshootinggame/
-├── include/                  # 所有头文件
+├── include/                 # 所有头文件
 │   ├── Game/
 │   │   ├── Bullet.h
 │   │   ├── Enemy.h
@@ -25,7 +25,7 @@ planeshootinggame/
 │   │   └── SoundManager.h
 │   └── Utils/
 │       ├── common.h
-│       └── Constants.h      # 建议添加的常量定义文件
+│       └── Constants.h      
 ├── src/                     # 所有源代码
 │   ├── Game/
 │   │   ├── Bullet.cpp
@@ -34,20 +34,24 @@ planeshootinggame/
 │   │   ├── GameObject.cpp
 │   │   ├── Player.cpp
 │   │   └── PowerUp.cpp
-│   ├── Managers/
-│   │   ├── GameManager.cpp
-│   │   └── SoundManager.cpp
-│   └── Utils/
-│       └── common.cpp
+│   └── Managers/
+│       ├── GameManager.cpp
+│       └── SoundManager.cpp
 ├── res/                     # 游戏资源
 │   ├── Textures/
 |   |   ├── BOSS.png
 |   |   ├── enemy001.png
 |   |   ├── enemy002.png
-│   │   └── FEUI.png         # 图片资源
+│   │   └── FEIJI.png        # 图片资源
 │   └── Sounds/              # 音效资源
+|       └── backgroundmusic2.mp3
 ├── vcproj/                  # VS项目配置
 │   ├── planeshootinggame.vcxproj
+│   ├── planeshootinggame.filters
+│   └── planeshootinggame.user
+└── scripts/                 # 构建/运行脚本
+    ├── build.sh             # 构建脚本
+    └── run.sh               # 运行脚本
 │   ├── planeshootinggame.filters
 │   └── planeshootinggame.user
 └── scripts/                 # 构建/运行脚本
